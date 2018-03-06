@@ -2,7 +2,6 @@
 # This script tries to be a very stupid configuration management tool but a bit better than
 # a simple shell script
 # Requires: git
-set -e 
 
 GITREPO="https://git.mauras.ch/Various/shmgmt"
 SHELL="/bin/sh"
