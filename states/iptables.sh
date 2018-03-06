@@ -10,7 +10,7 @@ if [ "${SRCSUM}" = "${DSTSUM}" ]; then
 else
   # Exit if we miss the source file
   if [ "${SRCSUM}" = "nosrc" ]; then
-    echo "  !! Missing source file ${SRC}"
+    echo "  ! Missing source file ${SRC}"
     exit 1
   fi
   cp -f ${SRC} ${DST}
@@ -19,3 +19,6 @@ else
     exit 1
   fi
 fi
+
+# If file has been successfully changed, restart service
+$SHELL ${TMPDIR}/states/service iptables
