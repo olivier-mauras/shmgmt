@@ -20,16 +20,17 @@ git clone $GITREPO $TMPDIR
 
 # Get in there and loop over ./run/* scripts
 for SCRIPT in ${TMPDIR}/run/* ; do
-  echo "==> Applying ${SCRIPT}"
+  BSCRIPT=`basename ${SCRIPT}`
+  echo "==> Applying ${BSCRIPT}"
   TMPDIR=${TMPDIR} SHELL=${SHELL} $SHELL ${SCRIPT}
   RET=$?
   if [ $RET -eq 0 ]; then
-    echo "==> ${SCRIPT}: OK"
+    echo "==> ${BSCRIPT}: OK"
   elif [ $RET -eq 1 ]; then
-    echo "==> ${SCRIPT}: ERROR!"
+    echo "==> ${BSCRIPT}: ERROR!"
   elif [ $RET -eq 2 ]; then
-    echo "==> ${SCRIPT}: NOT NEEDED"
+    echo "==> ${BSCRIPT}: NOT NEEDED"
   else
-    echo "==> ${SCRIPT}: Unknown return"
+    echo "==> ${BSCRIPT}: Unknown return"
   fi
 done
