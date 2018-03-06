@@ -3,7 +3,7 @@ SHELL="/bin/sh"
 SRC="${TMPDIR}/files/etc/iptables/iptables.rules"
 DST="/etc/iptables/iptables.rules"
 SRCSUM=`sha1sum $SRC | cut -f 1 -d ' '`
-DSTSUM=`[[ -f $DST ]] && sha1sum $DST | cut -f 1 -d ' ' || echo "nofile"`
+DSTSUM=`[ -f $DST ] && sha1sum $DST | cut -f 1 -d ' ' || echo "nofile"`
 
 if [ "${SRCSUM}" == "${DSTSUM}" ]; then
   exit 2
