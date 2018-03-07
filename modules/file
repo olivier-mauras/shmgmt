@@ -1,31 +1,29 @@
 #!/bin/sh
 # Set values from arguments
-while [ "$1" != "" ]; do
-    PARAM=`echo $1 | awk -F= '{print $1}'`
-    VALUE=`echo $1 | awk -F= '{print $2}'`
-    case $PARAM in
-        -s)
-            SRC=$VALUE
-            ;;
-        -d)
-            DST=$VALUE
-            ;;
-        -u)
-            USER=$VALUE
-            ;;
-        -g)
-            GROUP=$VALUE
-            ;;
-        -m)
-            MODE=$VALUE
-            ;;
-        *)
-            echo "  ! Unknown parameter \"$PARAM\""
-            exit 1
-            ;;
-    esac
-    shift
+while getopts ":s:d:u:g:m" opt; do    
+  case $opt in
+    s)
+        SRC=$OPTARG
+        ;;
+    d)
+        DST=$OPTARG
+        ;;
+    u)
+        USER=$OPTARG
+        ;;
+    g)
+        GROUP=$OPTARG
+        ;;
+    m)
+        MODE=$OPTARG
+        ;;
+    *)
+        echo "  ! Unknown parameter \"$PARAM\""
+        exit 1
+        ;;
+  esac
 done
+shift $((OPTIND -1))
 
 # Set defaults
 [ -z $SRC ] && echo "  ! Missing source file" && exit 1
