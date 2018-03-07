@@ -33,3 +33,6 @@ for SCRIPT in ${TMPDIR}/states/* ; do
     echo "==> ${BSCRIPT}: Unknown return"
   fi
 done
+
+# Cleanup local git clone
+#rm -rf $TMPDIR
