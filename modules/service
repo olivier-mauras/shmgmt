@@ -1,0 +1,8 @@
+#!/bin/sh
+# Simple module that will handle runit services
+ACTION=$1
+SERVICE=$2
+
+sv $ACTION $SERVICE
+RET=$?
+[ $RET -gt 0 ] && exit 1 || exit 0
