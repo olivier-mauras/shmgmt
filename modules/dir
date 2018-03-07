@@ -29,7 +29,7 @@ shift $((OPTIND -1))
 [ -z $MODE ] && MODE="640"
 
 if [ -d $DST ]; then
-  exit 2
+  exit 0
 else
   mkdir -p ${DST}
   RET=$?

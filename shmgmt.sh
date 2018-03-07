@@ -27,12 +27,10 @@ for SCRIPT in ${TMPDIR}/states/* ; do
     echo "==> ${BSCRIPT}: OK"
   elif [ $RET -eq 1 ]; then
     echo "==> ${BSCRIPT}: ERROR!"
-  elif [ $RET -eq 2 ]; then
-    echo "==> ${BSCRIPT}: NOT NEEDED"
   else
-    echo "==> ${BSCRIPT}: Unknown return"
+    echo "==> ${BSCRIPT}: Unknown return - $RET"
   fi
 done
 
 # Cleanup local git clone
-#rm -rf $TMPDIR
+rm -rf $TMPDIR

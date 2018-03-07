@@ -36,7 +36,8 @@ SRCSUM=`[ -f $SRC ] && sha1sum $SRC | cut -f 1 -d ' ' || echo "nosrc"`
 DSTSUM=`[ -f $DST ] && sha1sum $DST | cut -f 1 -d ' ' || echo "nodst"`
 
 if [ "${SRCSUM}" = "${DSTSUM}" ]; then
-  exit 2
+  echo "  ? Source and destination match"
+  exit 0
 else
   # Exit if we miss the source file
   if [ "${SRCSUM}" = "nosrc" ]; then
