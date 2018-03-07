@@ -28,7 +28,7 @@ shift $((OPTIND -1))
 [ -z $GROUP ] && GROUP="root"
 [ -z $MODE ] && MODE="640"
 
-if [ -d $DST ]; the
+if [ -d $DST ]; then
   exit 2
 else
   mkdir -p ${DST}
