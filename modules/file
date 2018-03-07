@@ -1,7 +1,6 @@
 #!/bin/sh
-SHELL="/bin/sh"
-SRC="${TMPDIR}/files/etc/iptables/iptables.rules"
-DST="/etc/iptables/iptables.rules"
+SRC="$1"
+DST="$2"
 SRCSUM=`[ -f $SRC ] && sha1sum $SRC | cut -f 1 -d ' ' || echo "nosrc"`
 DSTSUM=`[ -f $DST ] && sha1sum $DST | cut -f 1 -d ' ' || echo "nodst"`
 
@@ -19,6 +18,3 @@ else
     exit 1
   fi
 fi
-
-# If file has been successfully changed, restart service
-$SHELL ${TMPDIR}/states/service iptables

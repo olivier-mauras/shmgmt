@@ -18,7 +18,7 @@ fi
 git clone $GITREPO $TMPDIR
 
 # Get in there and loop over ./run/* scripts
-for SCRIPT in ${TMPDIR}/run/* ; do
+for SCRIPT in ${TMPDIR}/states/* ; do
   BSCRIPT=`basename ${SCRIPT}`
   echo "==> Applying ${BSCRIPT}"
   TMPDIR=${TMPDIR} SHELL=${SHELL} $SHELL ${SCRIPT}

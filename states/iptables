@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+# First deploy file
+$SHELL ${TMPDIR}/modules/file "${TMPDIR}/files/etc/iptables/iptables.rules" \
+                              "/etc/iptables/iptables.rules"
+
+# Then if successful restart service
+$SHELL ${TMPDIR}/modules/service restart iptables
