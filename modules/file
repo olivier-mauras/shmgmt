@@ -1,6 +1,40 @@
 #!/bin/sh
-SRC="$1"
-DST="$2"
+# Set values from arguments
+while [ "$1" != "" ]; do
+    PARAM=`echo $1 | awk -F= '{print $1}'`
+    VALUE=`echo $1 | awk -F= '{print $2}'`
+    case $PARAM in
+        -s)
+            SRC=$VALUE
+            ;;
+        -d)
+            DST=$VALUE
+            ;;
+        -u)
+            USER=$VALUE
+            ;;
+        -g)
+            GROUP=$VALUE
+            ;;
+        -m)
+            MODE=$VALUE
+            ;;
+        *)
+            echo "  ! Unknown parameter \"$PARAM\""
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+# Set defaults
+[ -z $SRC ] && echo "  ! Missing source file" && exit 1
+[ -z $DST ] && echo "  ! Missing destination file" && exit 1
+[ -z $USER ] && USER="root"
+[ -z $GROUP ] && GROUP="root"
+[ -z $MODE ] && MODE="640"
+
 SRCSUM=`[ -f $SRC ] && sha1sum $SRC | cut -f 1 -d ' ' || echo "nosrc"`
 DSTSUM=`[ -f $DST ] && sha1sum $DST | cut -f 1 -d ' ' || echo "nodst"`
 
@@ -9,12 +43,16 @@ if [ "${SRCSUM}" = "${DSTSUM}" ]; then
 else
   # Exit if we miss the source file
   if [ "${SRCSUM}" = "nosrc" ]; then
-    echo "  ! Missing source file ${SRC}"
+    echo "  ! Source file not found: ${SRC}"
     exit 1
   fi
   cp -f ${SRC} ${DST}
   RET=$?
-  if [ $RET -gt 0 ]; then
+  chown ${USER}:${GROUP} ${DST}
+  RET1=$?
+  chmod ${MODE} ${DST}
+  RET2=$?
+  if [ $RET -gt 0 -o $RET1 -gt 0 -o $RET2 -gt 0 ]; then
     exit 1
   fi
 fi
