@@ -37,6 +37,20 @@ DSTSUM=`[ -f $DST ] && sha1sum $DST | cut -f 1 -d ' ' || echo "nodst"`
 
 if [ "${SRCSUM}" = "${DSTSUM}" ]; then
   echo "  ? Source and destination match"
+
+  # Retrieve user/group/mode from the file if it exists and we need to update rights/mode
+  FSTAT=`stat -c %a-%U-%G ${DST}`
+  FMODE=`echo ${FSTAT} | cut -f 1 -d '-'`
+  FUSER=`echo ${FSTAT} | cut -f 2 -d '-'`
+  FGROUP=`echo ${FSTAT} | cut -f 3 -d '-'`
+
+  [ $FUSER != $USER -o $FGROUP != $GROUP ] && \
+    echo "  => Fixing user/group" && \
+    (chown ${USER}:${GROUP} ${DST} || exit 1)
+  [ $FMODE != $MODE ] && \
+    echo "  => Fixing mode" && \
+    (chmod ${MODE} ${DST} || exit 1)
+
   exit 0
 else
   # Exit if we miss the source file
@@ -44,6 +58,8 @@ else
     echo "  ! Source file not found: ${SRC}"
     exit 1
   fi
+
+  # Copy the file over destination and set configured rights
   cp -f ${SRC} ${DST}
   RET=$?
   chown ${USER}:${GROUP} ${DST}

@@ -26,7 +26,7 @@ shift $((OPTIND -1))
 [ -z $DST ] && echo "  ! Missing directory" && exit 1
 [ -z $USER ] && USER="root"
 [ -z $GROUP ] && GROUP="root"
-[ -z $MODE ] && MODE="640"
+[ -z $MODE ] && MODE="750"
 
 if [ -d $DST ]; then
   exit 0
