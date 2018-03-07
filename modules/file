@@ -21,7 +21,6 @@ while [ "$1" != "" ]; do
             ;;
         *)
             echo "  ! Unknown parameter \"$PARAM\""
-            usage
             exit 1
             ;;
     esac
