@@ -15,7 +15,7 @@ else
   mkdir -p $TMPDIR
 fi
 
-git clone $GITREPO $TMPDIR
+git-clone $GITREPO $TMPDIR
 
 # Load dist_check module
 . ${TMPDIR}/modules/dist_check
