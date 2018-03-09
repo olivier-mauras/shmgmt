@@ -1,11 +1,21 @@
 #!/bin/sh
 # This script tries to be a very stupid configuration management tool but a bit better than
 # a simple shell script
-# Requires: git
+# Requires: wget
 
 GITREPO="https://git.mauras.ch/Various/shmgmt"
+GITCLONEBIN="https://git.mauras.ch/Various/git-clone/raw/branch/master/git-clone"
 SHELL="/bin/sh"
 TMPDIR="/tmp/shmgmt"
+
+# Check if git-clone is installed, if not install it
+GITCLONE=`which git-clone`
+RET=$?
+if [ $RET -ne 0 ]; then
+  echo "==> Installing git-clone binary in PATH"
+  wget ${GITCLONEBIN} -P /bin/ || exit 1
+  chmod 755 /bin/git-clone || exit 1
+fi
 
 # Git clone the repo
 if [ ! -d $TMPDIR ]; then
@@ -15,7 +25,12 @@ else
   mkdir -p $TMPDIR
 fi
 
-git-clone $GITREPO $TMPDIR
+$GITCLONE $GITREPO $TMPDIR > /dev/null 2>&1
+RET=$?
+if [ $RET -ne 0 ]; then
+  echo "  ! Error cloning repo"
+  exit 1
+fi
 
 # Load dist_check module
 . ${TMPDIR}/modules/dist_check
