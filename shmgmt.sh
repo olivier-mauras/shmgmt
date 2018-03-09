@@ -11,9 +11,9 @@ TMPDIR="/tmp/shmgmt"
 
 # Detect libc version - glibc or musl
 echo "==> Detect libc version"
-if `ldd --version 2>&1 | head -1 | grep musl`; then
+if `ldd --version 2>&1 | head -1 | grep musl >/dev/null 2>&1`; then
   LIBC="musl"
-elif `ldd --version 2>&1 | head -1 | grep GNU`; then
+elif `ldd --version 2>&1 | head -1 | grep GNU >/dev/null 2>&1`; then
   LIBC="glibc"
 else
   echo "  ! Error unknown libc version"
