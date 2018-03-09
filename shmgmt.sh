@@ -9,10 +9,21 @@ GITCLONE="/bin/git-clone"
 SHELL="/bin/sh"
 TMPDIR="/tmp/shmgmt"
 
+# Detect libc version - glibc or musl
+echo "==> Detect libc version"
+if `ldd --version 2>&1 | head -1 | grep musl`; then
+  LIBC="musl"
+elif `ldd --version 2>&1 | head -1 | grep GNU`; then
+  LIBC="glibc"
+else
+  echo "  ! Error unknown libc version"
+  exit 1
+fi
+
 # Check if git-clone is installed, if not install it
 if [ ! -f $GITCLONE ]; then
   echo "==> Installing git-clone binary in PATH"
-  wget ${GITCLONEURL} -P /bin/ || exit 1
+  wget ${GITCLONEURL}_${LIBC} -O /bin/git-clone || exit 1
   chmod 755 /bin/git-clone || exit 1
 fi
 
