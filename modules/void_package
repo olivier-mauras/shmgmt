@@ -1,0 +1,59 @@
+#!/bin/sh
+# Simple wrapper around xbps
+
+_check_installed() {
+  PACKAGE=$1
+  xbps-query $PACKAGE > /dev/null 2>&1
+  RET=$?
+  if [ $RET -eq 0 ]; then
+    return 0
+  elif [ $RET -eq 2 ]; then
+    return 1
+  else
+    echo "  ! Error processing xbps-query ${PACKAGE}"
+    exit 1
+  fi
+}
+
+_install() {
+  PACKAGE=$1
+  if ! `_check_installed ${PACKAGE}`; then
+    xbps-install -Sy ${PACKAGE}
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      echo "  ! Error processing xbps-install -Sy ${PACKAGE}"
+      exit 1
+    fi
+  else
+    return 0
+  fi
+}
+
+_remove() {
+  PACKAGE=$1
+  if `_check_installed ${PACKAGE}`; then
+    xbps-remove -Ry ${PACKAGE}
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      echo "  ! Error processing xbps-remove -Ry ${PACKAGE}"
+      exit 1
+    fi
+  else
+    return 0
+  fi
+}
+
+# Check that a package name has been given
+if [ -z $2 ]; then
+  echo "  ! You must provide a package name"
+  exit 1
+fi
+
+# Check if an action has been set
+case $1 in
+  install)    _install $2;;
+  remove)     _remove $2;;
+  *)        echo "  ! Invalid action - (install|remove)"
+            exit 1
+            ;;
+esac

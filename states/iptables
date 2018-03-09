@@ -1,7 +1,10 @@
 #!/bin/sh
 set -e
 
-# First deploy file but ensure directory is present
+# First install package and exit if fails as it's required for subsequent steps
+$SHELL ${TMPDIR}/modules/${DIST}_package install iptables || exit 1
+
+# Then deploy file but ensure directory is present
 $SHELL ${TMPDIR}/modules/dir -d /etc/iptables
 $SHELL ${TMPDIR}/modules/file -s ${TMPDIR}/files/etc/iptables/iptables.rules \
                               -d /etc/iptables/iptables.rules
