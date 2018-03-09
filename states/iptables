@@ -7,4 +7,4 @@ $SHELL ${TMPDIR}/modules/file -s ${TMPDIR}/files/etc/iptables/iptables.rules \
                               -d /tmp/iptables/iptables.rules
 
 # Then if successful restart service
-$SHELL ${TMPDIR}/modules/service restart iptables
+$SHELL ${TMPDIR}/modules/${DIST}_service restart iptables

@@ -1,0 +1,162 @@
+#!/bin/sh
+# Simple module that will handle runit services
+ENABLE=0
+DISABLE=0
+
+while getopts "ed" opt; do
+  case $opt in
+    e)
+        ENABLE=1
+        ;;
+    d)
+        DISABLE=1
+        ;;
+    *)
+        echo "  ! Unknown parameter \"$PARAM\""
+        exit 1
+        ;;
+  esac
+done
+shift $((OPTIND -1))
+
+## FUNCTIONS
+_check_enabled() {
+  SERVICE=$1
+  if [ -h /var/service/${SERVICE} ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+_check_running() {
+  SERVICE=$1
+  sv check $SERVICE | grep "ok: run" > /dev/null 2>&1
+  RET=$?
+  if [ $RET -eq 0 ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+_start() {
+  SERVICE=$1
+  if `_check_enabled $SERVICE`; then
+    ENABLED=1
+  else
+    ENABLED=0
+  fi
+
+  if [ $ENABLE -eq 1 -a $ENABLED -eq 0 ]; then
+    _enable $SERVICE
+  fi
+  if [ $ENABLE -eq 0 -a $ENABLED -eq 0 ]; then
+    echo "  ! Can't start a disabled service"
+    exit 1
+  fi
+
+  if `_check_running $SERVICE`; then
+    # Service already running
+    return 0
+  else
+    sv start $SERVICE || exit 1
+  fi
+}
+
+_stop() {
+  SERVICE=$1
+  if `_check_enabled $SERVICE`; then
+    ENABLED=1
+  else
+    ENABLED=0
+  fi
+
+  if `_check_running $SERVICE`; then
+    if [ $ENABLED -eq 1 ]; then
+      sv stop $SERVICE || exit 1
+      if [ $DISABLE -eq 1 ]; then
+        _disable $SERVICE
+      fi
+    else
+      return 0
+    fi
+  else
+    # Already stopped
+    return 0
+  fi
+}
+
+_restart() {
+  SERVICE=$1
+
+  if [ $DISABLE -eq 1 ]; then
+    echo "  ! Asking to restart and disable a service doesn't make sense"
+    exit 1
+  fi
+
+  if `_check_enabled $SERVICE`; then
+    ENABLED=1
+  else
+    ENABLED=0
+  fi
+
+  if [ $ENABLE -eq 1 -a $ENABLED -eq 0 ]; then
+    _enable $SERVICE
+  fi
+  if [ $ENABLE -eq 0 -a $ENABLED -eq 0 ]; then
+    echo "  ! Can't restart a disabled service"
+    exit 1
+  fi
+
+  if `_check_running $SERVICE`; then
+    # Service already running
+    sv restart $SERVICE || exit 1
+  else
+    sv start $SERVICE || exit 1
+  fi
+}
+
+_disable() {
+  SERVICE=$1
+  if [ -h /var/service/${SERVICE} ]; then
+    unlink /var/service/${SERVICE} || exit 1
+  else
+    return 0
+  fi
+}
+
+_enable() {
+  SERVICE=$1
+  if [ -d /etc/sv/${SERVICE} ]; then
+    ln -s /etc/sv/${SERVICE} /var/service/${SERVICE} || exit 1
+  else
+    echo "  ! Service doesn't exist: $SERVICE"
+    exit 1
+  fi
+}
+
+## START
+# Ensure -e -d not set at the same time
+if [ $ENABLE -eq 1 -a $DISABLE -eq 1 ]; then
+  echo "  ! Service can't be enabled and disabled at the same time"
+  exit 1
+fi
+
+# Check that a service name has been given
+if [ -z $2 ]; then
+  echo "  ! You must provide a service name"
+  exit 1
+fi
+
+# Check if an action has been set
+case $1 in
+  start)    _start $2;;
+  stop)     _stop $2;;
+  restart)  _restart $2;;
+  *)        echo "  ! Invalid action - (start|stop|restart)"
+            exit 1
+            ;;
+esac
+
+

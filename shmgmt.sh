@@ -17,11 +17,14 @@ fi
 
 git clone $GITREPO $TMPDIR
 
+# Load dist_check module
+. ${TMPDIR}/modules/dist_check
+
 # Get in there and loop over ./run/* scripts
 for SCRIPT in ${TMPDIR}/states/* ; do
   BSCRIPT=`basename ${SCRIPT}`
   echo "==> Applying ${BSCRIPT}"
-  TMPDIR=${TMPDIR} SHELL=${SHELL} $SHELL ${SCRIPT}
+  TMPDIR=${TMPDIR} SHELL=${SHELL} DIST=${DIST} $SHELL ${SCRIPT}
   RET=$?
   if [ $RET -eq 0 ]; then
     echo "==> ${BSCRIPT}: OK"

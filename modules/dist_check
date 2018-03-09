@@ -1,0 +1,4 @@
+#!/bin/sh
+# Load os-release
+. /etc/os-release
+DIST=$ID
