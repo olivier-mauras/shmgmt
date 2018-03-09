@@ -1,6 +1,7 @@
 #!/bin/sh
 # Set values from arguments
-while getopts ":s:d:u:g:m" opt; do    
+BACKUP=0
+while getopts ":s:d:u:g:mb" opt; do
   case $opt in
     s)
         SRC=$OPTARG
@@ -16,6 +17,9 @@ while getopts ":s:d:u:g:m" opt; do
         ;;
     m)
         MODE=$OPTARG
+        ;;
+    b)
+        BACKUP=1
         ;;
     *)
         echo "  ! Unknown parameter \"$PARAM\""
@@ -60,6 +64,7 @@ else
   fi
 
   # Copy the file over destination and set configured rights
+  [ $BACKUP -eq 1 ] && cp -f ${DST} ${DST}.shmgmt.bkp
   cp -f ${SRC} ${DST}
   RET=$?
   chown ${USER}:${GROUP} ${DST}
