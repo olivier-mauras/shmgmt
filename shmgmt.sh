@@ -4,16 +4,15 @@
 # Requires: wget
 
 GITREPO="https://git.mauras.ch/Various/shmgmt"
-GITCLONEBIN="https://git.mauras.ch/Various/git-clone/raw/branch/master/git-clone"
+GITCLONEURL="https://git.mauras.ch/Various/git-clone/raw/branch/master/git-clone"
+GITCLONE="/bin/git-clone"
 SHELL="/bin/sh"
 TMPDIR="/tmp/shmgmt"
 
 # Check if git-clone is installed, if not install it
-GITCLONE=`which git-clone`
-RET=$?
-if [ $RET -ne 0 ]; then
+if [ ! -f $GITCLONE ]; then
   echo "==> Installing git-clone binary in PATH"
-  wget ${GITCLONEBIN} -P /bin/ || exit 1
+  wget ${GITCLONEURL} -P /bin/ || exit 1
   chmod 755 /bin/git-clone || exit 1
 fi
 
