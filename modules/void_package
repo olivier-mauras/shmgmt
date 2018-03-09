@@ -18,7 +18,7 @@ _check_installed() {
 _install() {
   PACKAGE=$1
   if ! `_check_installed ${PACKAGE}`; then
-    xbps-install -Sy ${PACKAGE}
+    xbps-install -Sy ${PACKAGE} > /dev/null 2>&1
     RET=$?
     if [ $RET -ne 0 ]; then
       echo "  ! Error processing xbps-install -Sy ${PACKAGE}"
@@ -32,7 +32,7 @@ _install() {
 _remove() {
   PACKAGE=$1
   if `_check_installed ${PACKAGE}`; then
-    xbps-remove -Ry ${PACKAGE}
+    xbps-remove -Ry ${PACKAGE} > /dev/null 2>&1
     RET=$?
     if [ $RET -ne 0 ]; then
       echo "  ! Error processing xbps-remove -Ry ${PACKAGE}"
