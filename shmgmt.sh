@@ -44,6 +44,8 @@ _clone_repo() {
 _install() {
   INSTALLDIR="$1"
 
+  echo "==> Install shmgmt locally"
+
   # Detect libc version - glibc or musl
   echo "==> Detect libc version"
   if `ldd --version 2>&1 | head -1 | grep musl >/dev/null 2>&1`; then
