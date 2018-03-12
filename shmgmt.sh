@@ -137,3 +137,5 @@ if [ -z $STATEREPO ] || [ -z $STATEDIR ] || [ -z $INSTALLDIR ]; then
   echo "!! Missing needed variables STATEREPO, STATEDIR or INSTALLDIR to work"
 fi
 
+# Clone and process states
+_process_states $INSTALLDIR $STATEDIR
