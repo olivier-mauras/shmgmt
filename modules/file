@@ -1,7 +1,7 @@
 #!/bin/sh
 # Set values from arguments
 BACKUP=0
-while getopts ":s:d:u:g:mb" opt; do
+while getopts "s:d:u:g:m:b" opt; do
   case $opt in
     s)
         SRC=$OPTARG
@@ -39,8 +39,15 @@ shift $((OPTIND -1))
 SRCSUM=`[ -f $SRC ] && sha1sum $SRC | cut -f 1 -d ' ' || echo "nosrc"`
 DSTSUM=`[ -f $DST ] && sha1sum $DST | cut -f 1 -d ' ' || echo "nodst"`
 
+# Exit if we miss the source file
+if [ "${SRCSUM}" = "nosrc" ]; then
+  echo "  ! Source file not found: ${SRC}"
+  exit 1
+fi
+
+echo "  * ${DST}"
 if [ "${SRCSUM}" = "${DSTSUM}" ]; then
-  echo "  ? Source and destination match"
+  echo "    = Source and destination match"
 
   # Retrieve user/group/mode from the file if it exists and we need to update rights/mode
   FSTAT=`stat -c %a-%U-%G ${DST}`
@@ -49,22 +56,17 @@ if [ "${SRCSUM}" = "${DSTSUM}" ]; then
   FGROUP=`echo ${FSTAT} | cut -f 3 -d '-'`
 
   [ $FUSER != $USER -o $FGROUP != $GROUP ] && \
-    echo "  => Fixing user/group" && \
+    echo "    => Fixing user/group" && \
     (chown ${USER}:${GROUP} ${DST} || exit 1)
   [ $FMODE != $MODE ] && \
-    echo "  => Fixing mode" && \
+    echo "    => Fixing mode" && \
     (chmod ${MODE} ${DST} || exit 1)
 
   exit 0
 else
-  # Exit if we miss the source file
-  if [ "${SRCSUM}" = "nosrc" ]; then
-    echo "  ! Source file not found: ${SRC}"
-    exit 1
-  fi
-
   # Copy the file over destination and set configured rights
-  [ $BACKUP -eq 1 ] && cp -f ${DST} ${DST}.shmgmt.bkp
+  [ $BACKUP -eq 1 -a -f ${DST} ] && cp -f ${DST} ${DST}.shmgmt.bkp
+  echo "    => Copy destination over"
   cp -f ${SRC} ${DST}
   RET=$?
   chown ${USER}:${GROUP} ${DST}

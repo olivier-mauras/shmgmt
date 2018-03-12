@@ -23,26 +23,35 @@ shift $((OPTIND -1))
 _check_enabled() {
   SERVICE=$1
   if [ -h /var/service/${SERVICE} ]; then
+    echo "= Service is enabled"
     return 0
   else
+    echo "= Service is disabled"
     return 1
   fi
 }
 
 _check_running() {
+  local RET=0
   SERVICE=$1
   sv check $SERVICE | grep "ok: run" > /dev/null 2>&1
   RET=$?
   if [ $RET -eq 0 ]; then
+    echo "= Service is running"
     return 0
   else
+    echo "= Service is not running"
     return 1
   fi
 }
 
 _start() {
+  local RET=0
   SERVICE=$1
-  if `_check_enabled $SERVICE`; then
+  IS_ENABLED=`_check_enabled $SERVICE`
+  RET=$?
+  echo "    $IS_ENABLED"
+  if [ $RET -eq 0 ]; then
     ENABLED=1
   else
     ENABLED=0
@@ -56,24 +65,36 @@ _start() {
     exit 1
   fi
 
-  if `_check_running $SERVICE`; then
+  IS_RUNNING=`_check_running $SERVICE`
+  RET=$?
+  echo "    $IS_RUNNING"
+  if [ $RET -eq 0 ]; then
     # Service already running
     return 0
   else
+    echo "    => Starting service"
     sv start $SERVICE || exit 1
   fi
 }
 
 _stop() {
+  local RET=0
   SERVICE=$1
-  if `_check_enabled $SERVICE`; then
+  IS_ENABLED=`_check_enabled $SERVICE`
+  RET=$?
+  echo "    $IS_ENABLED"
+  if [ $RET -eq 0 ]; then
     ENABLED=1
   else
     ENABLED=0
   fi
 
-  if `_check_running $SERVICE`; then
+  IS_RUNNING=`_check_running $SERVICE`
+  RET=$?
+  echo "    $IS_RUNNING"
+  if [ $RET -eq 0 ]; then
     if [ $ENABLED -eq 1 ]; then
+      echo "    => Stopping service"
       sv stop $SERVICE || exit 1
       if [ $DISABLE -eq 1 ]; then
         _disable $SERVICE
@@ -88,6 +109,7 @@ _stop() {
 }
 
 _restart() {
+  local RET=0
   SERVICE=$1
 
   if [ $DISABLE -eq 1 ]; then
@@ -95,7 +117,10 @@ _restart() {
     exit 1
   fi
 
-  if `_check_enabled $SERVICE`; then
+  IS_ENABLED=`_check_enabled $SERVICE`
+  RET=$?
+  echo "    $IS_ENABLED"
+  if [ $RET -eq 0 ]; then
     ENABLED=1
   else
     ENABLED=0
@@ -109,10 +134,15 @@ _restart() {
     exit 1
   fi
 
-  if `_check_running $SERVICE`; then
+  IS_RUNNING=`_check_running $SERVICE`
+  RET=$?
+  echo "    $IS_RUNNING"
+  if [ $RET -eq 0 ]; then
     # Service already running
+    echo "    => Restarting service"
     sv restart $SERVICE || exit 1
   else
+    echo "    => Starting service"
     sv start $SERVICE || exit 1
   fi
 }
@@ -120,6 +150,7 @@ _restart() {
 _disable() {
   SERVICE=$1
   if [ -h /var/service/${SERVICE} ]; then
+    echo "    => Disabling service"
     unlink /var/service/${SERVICE} || exit 1
   else
     return 0
@@ -129,6 +160,7 @@ _disable() {
 _enable() {
   SERVICE=$1
   if [ -d /etc/sv/${SERVICE} ]; then
+    echo "    => Enabling service"
     ln -s /etc/sv/${SERVICE} /var/service/${SERVICE} || exit 1
   else
     echo "  ! Service doesn't exist: $SERVICE"
@@ -149,6 +181,9 @@ if [ -z $2 ]; then
   exit 1
 fi
 
+# Print details
+echo "  * $2 service"
+
 # Check if an action has been set
 case $1 in
   start)    _start $2;;
@@ -158,5 +193,3 @@ case $1 in
             exit 1
             ;;
 esac
-
-

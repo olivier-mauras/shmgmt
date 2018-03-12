@@ -28,8 +28,9 @@ shift $((OPTIND -1))
 [ -z $GROUP ] && GROUP="root"
 [ -z $MODE ] && MODE="750"
 
+echo "  * ${DST}"
 if [ -d ${DST} ]; then
-  echo "  ? Destination directory exists"
+  echo "    = Destination directory exists"
 
   # Retrieve user/group/mode from the file if it exists and we need to update rights/mode
   FSTAT=`stat -c %a-%U-%G ${DST}`
@@ -38,15 +39,16 @@ if [ -d ${DST} ]; then
   FGROUP=`echo ${FSTAT} | cut -f 3 -d '-'`
 
   [ $FUSER != $USER -o $FGROUP != $GROUP ] && \
-    echo "  => Fixing user/group" && \
+    echo "    => Fixing user/group" && \
     (chown ${USER}:${GROUP} ${DST} || exit 1)
   [ $FMODE != $MODE ] && \
-    echo "  => Fixing mode" && \
+    echo "    => Fixing mode" && \
     (chmod ${MODE} ${DST} || exit 1)
 
   exit 0
 else
   # Create directory as configured
+  echo "    => Creating directory"
   mkdir -p ${DST}
   RET=$?
   chown ${USER}:${GROUP} ${DST}

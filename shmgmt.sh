@@ -35,6 +35,7 @@ else
   mkdir -p $TMPDIR
 fi
 
+echo "==> Cloning repo"
 $GITCLONE $GITREPO $TMPDIR > /dev/null 2>&1
 RET=$?
 if [ $RET -ne 0 ]; then
