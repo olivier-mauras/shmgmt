@@ -116,7 +116,6 @@ while getopts ":c:r:di" opt; do
         STATEDIR=$OPTARG
         ;;
     i)
-        INSTALLDIR=$OPTARG
         _install $INSTALLDIR
         ;;
     *)
