@@ -86,6 +86,7 @@ _process_states() {
     BSTATE=`basename ${STATE}`
     echo "==> Applying ${BSTATE}"
     INSTALLDIR=${INSTALLDIR} \
+      STATEDIR=$STATEDIR \
       SHELL=${SHELL} \
       DIST=${DIST} \
       $SHELL ${STATE}
