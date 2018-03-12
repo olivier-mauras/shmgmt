@@ -12,9 +12,9 @@ SHELL="/bin/sh"
 
 _install_gitclone() {
   # Check if git-clone is installed, if not install it
-  if [ ! -f $GITCLONE ]; then
+  if [ ! -f $GITCLONEBIN ]; then
     echo "==> Installing git-clone binary in PATH"
-    [ ! -d `dirname $GITCLONEBIN` ] && mkdir -p `dirname $GITCLONEBIN` || exit 1
+    [ ! -d `dirname $GITCLONEBIN` ] && mkdir -p `dirname $GITCLONEBIN`
     wget ${GITCLONEURL}_${LIBC} -O $GITCLONEBIN || exit 1
     chmod 755 $GITCLONEBIN || exit 1
   fi
@@ -33,7 +33,7 @@ _clone_repo() {
   fi
 
   echo "==> Cloning $URL to $DESTDIR"
-  $GITCLONE $URL $DESTDIR > /dev/null 2>&1
+  $GITCLONEBIN $URL $DESTDIR > /dev/null 2>&1
   RET=$?
   if [ $RET -ne 0 ]; then
     echo "  ! Error cloning repo"
