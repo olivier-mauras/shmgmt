@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CONFIG="~/.shmgmt"
+CONFIG=~/.shmgmt
 INSTALLDIR="/usr/local/libexec/shmgmt"
 INSTALLBIN="/usr/local/bin/shmgmt"
 SHMGMTREPO="https://git.mauras.ch/shmgmt/shmgmt"
