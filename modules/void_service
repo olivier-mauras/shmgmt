@@ -45,6 +45,17 @@ _check_running() {
   fi
 }
 
+_check_repaired() {
+  CONFFILE=$1
+  if [ -f ${STATEDIR}/tmp/${CONFFILE}.repair ]; then
+    echo "    = ${CONFFILE} has been repaired"
+    return 0
+  else
+    echo "    = ${CONFFILE} has not been repaired"
+    return 1
+  fi
+}
+
 _start() {
   local RET=0
   SERVICE=$1
@@ -111,6 +122,7 @@ _stop() {
 _restart() {
   local RET=0
   SERVICE=$1
+  CONFFILE=$2
 
   if [ $DISABLE -eq 1 ]; then
     echo "  ! Asking to restart and disable a service doesn't make sense"
@@ -132,6 +144,14 @@ _restart() {
   if [ $ENABLE -eq 0 -a $ENABLED -eq 0 ]; then
     echo "  ! Can't restart a disabled service"
     exit 1
+  fi
+
+  if [ ! -z $CONFFILE ]; then
+    _check_repaired $CONFFILE
+    TER=$?
+    if [ $TER -ne 0 ]; then
+      return 0
+    fi
   fi
 
   IS_RUNNING=`_check_running $SERVICE`
@@ -188,7 +208,7 @@ echo "  * $2 service"
 case $1 in
   start)    _start $2;;
   stop)     _stop $2;;
-  restart)  _restart $2;;
+  restart)  _restart $2 $3;;
   *)        echo "  ! Invalid action - (start|stop|restart)"
             exit 1
             ;;
