@@ -93,9 +93,7 @@ _process_states() {
   for STATE in ${STATEDIR}/states/* ; do
     BSTATE=`basename ${STATE}`
     echo "==> Applying ${BSTATE}"
-    INSTALLDIR=${INSTALLDIR} \
-      STATEDIR=$STATEDIR \
-      SHELL=${SHELL} \
+    STATEDIR=${STATEDIR} \
       DIST=${DIST} \
       $SHELL ${STATE}
     RET=$?
