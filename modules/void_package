@@ -6,8 +6,10 @@ _check_installed() {
   xbps-query $PACKAGE > /dev/null 2>&1
   RET=$?
   if [ $RET -eq 0 ]; then
+    echo "= Package is installed"
     return 0
   elif [ $RET -eq 2 ]; then
+    echo "= Package is not installed"
     return 1
   else
     echo "  ! Error processing xbps-query ${PACKAGE}"
@@ -17,7 +19,11 @@ _check_installed() {
 
 _install() {
   PACKAGE=$1
-  if ! `_check_installed ${PACKAGE}`; then
+  IS_INSTALLED=`_check_installed ${PACKAGE}`
+  RET=$?
+  echo "    $IS_INSTALLED"
+  if [ $RET -ne 0 ]; then
+    echo "    => Installing package"
     xbps-install -Sy ${PACKAGE} > /dev/null 2>&1
     RET=$?
     if [ $RET -ne 0 ]; then
@@ -31,7 +37,11 @@ _install() {
 
 _remove() {
   PACKAGE=$1
-  if `_check_installed ${PACKAGE}`; then
+  IS_INSTALLED=`_check_installed ${PACKAGE}`
+  RET=$?
+  echo "    $IS_INSTALLED"
+  if [ $RET -eq 0 ]; then
+    echo "    => Removing package"
     xbps-remove -Ry ${PACKAGE} > /dev/null 2>&1
     RET=$?
     if [ $RET -ne 0 ]; then
@@ -48,6 +58,8 @@ if [ -z $2 ]; then
   echo "  ! You must provide a package name"
   exit 1
 fi
+
+echo "  * $2 package"
 
 # Check if an action has been set
 case $1 in
