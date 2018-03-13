@@ -1,7 +1,6 @@
 #!/bin/sh
 # Set values from arguments
 BACKUP=0
-echo "STATEDIR = $STATEDIR"
 while getopts "s:d:u:g:m:b" opt; do
   case $opt in
     s)
@@ -36,7 +35,12 @@ shift $((OPTIND -1))
 [ -z $USER ] && USER="root"
 [ -z $GROUP ] && GROUP="root"
 [ -z $MODE ] && MODE="640"
+TMPDIR="${STATEDIR}/tmp"
 
+# Create temp directory in $STATEDIR
+mkdir -p $TMPDIR
+
+# Check files checksum
 SRCSUM=`[ -f $SRC ] && sha1sum $SRC | cut -f 1 -d ' ' || echo "nosrc"`
 DSTSUM=`[ -f $DST ] && sha1sum $DST | cut -f 1 -d ' ' || echo "nodst"`
 
@@ -56,12 +60,16 @@ if [ "${SRCSUM}" = "${DSTSUM}" ]; then
   FUSER=`echo ${FSTAT} | cut -f 2 -d '-'`
   FGROUP=`echo ${FSTAT} | cut -f 3 -d '-'`
 
-  [ $FUSER != $USER -o $FGROUP != $GROUP ] && \
-    echo "    => Fixing user/group" && \
-    (chown ${USER}:${GROUP} ${DST} || exit 1)
-  [ $FMODE != $MODE ] && \
-    echo "    => Fixing mode" && \
-    (chmod ${MODE} ${DST} || exit 1)
+  if [ $FUSER != $USER ] || [ $FGROUP != $GROUP ]; then
+    echo "    => Fixing user/group"
+    chown ${USER}:${GROUP} ${DST} || exit 1
+    echo 1 > "$TMPDIR/`basename ${DST}`.repair"
+  fi
+  if [ $FMODE != $MODE ]; then
+    echo "    => Fixing mode"
+    chmod ${MODE} ${DST} || exit 1
+    echo 1 > "$TMPDIR/`basename ${DST}`.repair"
+  fi
 
   exit 0
 else
@@ -74,7 +82,8 @@ else
   RET1=$?
   chmod ${MODE} ${DST}
   RET2=$?
-  if [ $RET -gt 0 -o $RET1 -gt 0 -o $RET2 -gt 0 ]; then
+  if [ $RET -gt 0 ] || [ $RET1 -gt 0 ] || [ $RET2 -gt 0 ]; then
     exit 1
   fi
+  echo 1 > "$TMPDIR/`basename ${DST}`.repair"
 fi
