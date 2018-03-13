@@ -81,6 +81,10 @@ _process_states() {
     . ${LIB}
   done
 
+  for MODULE in ${INSTALLDIR}/modules/*; do
+    export `basename $MODULE`=${MODULE}
+  done
+
   # Loop over states
   for STATE in ${STATEDIR}/states/* ; do
     BSTATE=`basename ${STATE}`
