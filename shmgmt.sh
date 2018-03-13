@@ -82,7 +82,7 @@ _process_states() {
   done
 
   for MODULE in ${INSTALLDIR}/modules/*; do
-    export `basename $MODULE`=${MODULE}
+    export `basename $MODULE`="${SHELL} ${MODULE}"
   done
 
   # Loop over states
