@@ -1,6 +1,7 @@
 #!/bin/sh
 # Set values from arguments
 BACKUP=0
+echo "STATEDIR = $STATEDIR"
 while getopts "s:d:u:g:m:b" opt; do
   case $opt in
     s)
