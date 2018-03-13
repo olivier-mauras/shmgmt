@@ -82,7 +82,11 @@ _process_states() {
   done
 
   for MODULE in ${INSTALLDIR}/modules/*; do
-    export `basename $MODULE`="${SHELL} ${MODULE}"
+    if [ `echo $MODULE | grep ${DIST}` ]; then
+      export `basename $MODULE | cut -f 2- -d _`="${SHELL} ${MODULE}"
+    else
+      export `basename $MODULE`="${SHELL} ${MODULE}"
+    fi
   done
 
   # Loop over states
