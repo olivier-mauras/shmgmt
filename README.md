@@ -6,23 +6,24 @@ It tries to be fully POSIX shell compliant and has been tested with bash, dash, 
 
 #### Why?
 
-When working with minimalist installs under 100MB on disk, I felt that it didn't really make sense to install a configuration manager that can takes even more size than your full system.  
+When working with minimalist installs under 100MB on disk, it doesn't really make sense to install a configuration manager that can takes even more size than your full system.  
 Typically [this VoidLinux install](https://git.mauras.ch/voidlinux/gw-kvm-install) with an added `unbound` service takes ~70MB on disk.  
 
 As an example here's the size of some tools on VoidLinux:  
 
-- Puppet = 84MB
 - Ansible = 60MB
+- Puppet = 84MB
 - Salt = 73MB
 
 Using one of this tools would amount to roughly double the disk space, while you already have a shell installed and usable at not cost.  
 
 #### Features
 
-- Self contained, will install itself, set of shell scripts
+- Self contained - will install itself - set of shell scripts
 - Reasonably fast
+- Sync states from a Git repo
 - Defaults can be overriden from user defined config
-- Abstracted modules callable from states by their names `${file}`
+- Abstracted modules callable from states by their names, like: `${file}`
 - States are easy shell scripts calling on modules: Check [the example repo](https://git.mauras.ch/shmgmt/states_example)
 
 #### Modules list
