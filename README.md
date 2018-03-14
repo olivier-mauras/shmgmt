@@ -58,3 +58,11 @@ You can also call `shmgmt` to look at an arbitrary located config file
 shmgmt -c /arbitrary/path/to/shmgmt/config
 ```
 
+#### Options
+
+``` 
+-i: Install itself locally
+-c <CONFIG>: Specify config file
+-r <STATEREPO>: Git repo containing your state files
+-d <STATEDIR>: Where to clone your states files locally
+```
