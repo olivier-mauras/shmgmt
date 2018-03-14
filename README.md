@@ -45,8 +45,8 @@ rm -f /tmp/shmgmt
 
 #### Usage
 
-By default `shmgmt` with point its `$STATEREPO` path to [the example repo](https://git.mauras.ch/shmgmt/states_example).  
-Override `STATEDIR` in your own config file.
+By default `shmgmt` will point its `$STATEREPO` path to [the example repo](https://git.mauras.ch/shmgmt/states_example).  
+Override `$STATEREPO` in your own config file.
 
 ``` bash
 echo "STATEREPO=<my own state repo>" > ~/.shmgmt
