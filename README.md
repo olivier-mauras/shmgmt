@@ -6,7 +6,7 @@ It tries to be fully POSIX shell compliant and has been tested with bash, dash, 
 
 #### Why?
 
-When working with minimalist installs under 100MB on disk, it doesn't really make sense to install a configuration manager that can takes even more size than your full system.  
+When working with minimalist installs under 100MB on disk, it doesn't really make sense to install a configuration manager that can take even more size than your full system.  
 Typically [this VoidLinux install](https://git.mauras.ch/voidlinux/gw-kvm-install) with an added `unbound` service takes ~70MB on disk.  
 
 As an example here's the size of some tools on VoidLinux:  
@@ -19,7 +19,7 @@ Using one of this tools would amount to roughly double the disk space, while you
 
 #### Features
 
-- Self contained - will install itself - set of shell scripts
+- Self contained - will install itself locally - set of shell scripts
 - Reasonably fast
 - Sync states from a Git repo
 - Defaults can be overriden from user defined config
