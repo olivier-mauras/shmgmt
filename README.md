@@ -35,6 +35,8 @@ As of now the following modules exist:
 - void_package
 - void_service
 
+You can check per module documentation [here](./src/branch/master/documentation/modules)
+
 #### Installation
 
 ``` bash

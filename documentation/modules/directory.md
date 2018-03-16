@@ -13,7 +13,7 @@ Only destination is mandatory, any missing argument will default to the followin
 
 - USER: root
 - GROUP: root
-- MODDE: 750
+- MODE: 750
 
 #### Example
 

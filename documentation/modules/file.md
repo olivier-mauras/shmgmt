@@ -15,7 +15,7 @@ Only destination and source are mandatory, any missing argument will default to 
 
 - USER: root
 - GROUP: root
-- MODDE: 750
+- MODE: 750
 
 If a file is repaired then a basenamed `<DESTINATION>.repair` file will be created in `$TMPDIR`. This can be used to notify modules that support this function to act only if the file has been repaired.  
 For now `void_service` supports this feature and will only restart a service if `<DESTINATION>.repair` file exist.
