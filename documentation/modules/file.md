@@ -4,7 +4,7 @@ module: file
 #### Options
 
 `-d <DESTINATION>`: Which file should be taken cared of  
-`-s <SOURCE>`: From which source 
+`-s <SOURCE>`: From which source  
 `-u <USER>`: User owner of the directory  
 `-g <GROUP>`: Group owner of the directory  
 `-g <MODE>`: mode to apply to the directory  
